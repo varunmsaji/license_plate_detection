@@ -1,7 +1,11 @@
 def get_car(licence_plate,track_id):
     return [0,0,0,0,0]
 
-def read_license_plate():
+
+
+
+
+def get_license(thresholdsss):
     return 0,0
 
 
@@ -41,3 +45,34 @@ def write_csv(results, output_path):
                                                             results[frame_nmr][car_id]['license_plate']['text_score'])
                             )
         f.close()
+
+
+def new_write(results, output_path):
+    """
+    Write the results to a CSV file.
+
+    Args:
+        results (dict): Dictionary containing the results.
+        output_path (str): Path to the output CSV file.
+    """
+    try:
+        with open(output_path, 'w') as f:
+            f.write('frame_nmr,car_id,car_bbox,license_plate_bbox,license_plate_bbox_score,license_number,license_number_score\n')
+
+            for frame_nmr, frame_results in results.items():
+                print("Frame Number:", frame_nmr)
+                for car_id, car_data in frame_results.items():
+                    print("Car ID:", car_id)
+                    print("Car Data:", car_data)
+                    if 'car' in car_data and 'license_plate' in car_data and 'text' in car_data['license_plate']:
+                        car_bbox = ' '.join(map(str, car_data['car']['bbox']))
+                        plate_bbox = ' '.join(map(str, car_data['license_plate']['bbox']))
+                        plate_bbox_score = car_data['license_plate']['bbox_score']
+                        plate_text = car_data['license_plate']['text']
+                        plate_text_score = car_data['license_plate']['text_score']
+                        print("the data to write",frame_nmr,car_id,car_bbox,plate_bbox,plate_bbox_score,plate_text,plate_text_score)
+
+                        f.write(f"{frame_nmr},{car_id},{car_bbox},{plate_bbox},{plate_bbox_score},{plate_text},{plate_text_score}\n")
+    except Exception as e:
+        print("An error occurred:", e)
+
